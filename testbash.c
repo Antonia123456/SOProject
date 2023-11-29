@@ -6,6 +6,12 @@
 
 int main(int argc, char**argv)
 {
+  if(argc!=2)
+  {
+	printf("incorect number of arguments");
+	exit(-1);
+  }
+
   int pid;
   int pfd[2];
   if(pipe(pfd)==-1)
@@ -22,8 +28,8 @@ int main(int argc, char**argv)
   if(pid==0)
     {
       close(pfd[1]);
-      close(pfd[0]);
-      execlp("bash","bash","bashfile.sh","argv[1]",NULL);
+      //close(pfd[0]);
+      execlp("bash","bash","bashfile.sh",argv[1],NULL);
       perror("execlp\n");
     }
   close(pfd[0]);
