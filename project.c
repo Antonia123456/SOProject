@@ -252,17 +252,6 @@ void cerinteReg(struct stat* st_file,char *path,char* name,int out_fd,int *lines
       
 }
 
-void writeStatistic(int st_fd,int childPid,int lines)
-{
-  char buff[200];
-  sprintf(buff,"Procesul fiu %d are %d linii\n",childPid,lines);
-  if(write(st_fd,buff,strlen(buff))==-1)
-    {
-      perror("error write file");
-      exit(1);
-    }
-}
-
 
 void citire_director(const char *director,const char *iesire,char * caracter)
 {
@@ -283,12 +272,6 @@ void citire_director(const char *director,const char *iesire,char * caracter)
 	  perror("error stat output director");
 	  exit(1);
 	}
-  
-    
-  char statistici[300];
-  sprintf(statistici,"%s/statistica.txt",director);
-  
-  int st_fd=open(statistici,O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
 
 
   int suma=0;
@@ -419,7 +402,8 @@ void citire_director(const char *director,const char *iesire,char * caracter)
 			exit(count);
 		      }
 		    
-		    //in procesul parinte facem alt proces copil pt transformarea bmp-ului
+		    //transformarea in alb negru a imaginii
+		    
 		    int fd;
 		    fd=open(path,O_RDWR);
 		    if(fd==-1)
@@ -448,7 +432,8 @@ void citire_director(const char *director,const char *iesire,char * caracter)
 			exit(1);
 		      }
 
-		    //transformarea in alb negru a imaginii
+		   
+		    //in procesul parinte o sa facem alt proces copil pt transformarea bmp-ului
 		    pid_t childPid1 = fork();
 
 		    if (childPid1 == -1) {
@@ -597,7 +582,6 @@ void citire_director(const char *director,const char *iesire,char * caracter)
 	{
 	  printf("S-a incheiat procesul cu pid-ul %d si codul %d\n",pid, WEXITSTATUS(status));
 	  
-	  writeStatistic(st_fd, pid, WEXITSTATUS(status));
 	}
       else 
         printf("Process with pid %d didn't end correctly\n",pid);
@@ -605,12 +589,7 @@ void citire_director(const char *director,const char *iesire,char * caracter)
     }
   
   printf("Au fost identificate in total %d propozitii corecte care contin caracterul %s\n",suma,caracter);
-  
-  if(close(st_fd)==-1)
-    {
-      perror("error close statistic");
-      exit(1);
-    }
+ 
   if(closedir(dir)==-1)
     {
       perror("error close dir");

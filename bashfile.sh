@@ -27,5 +27,4 @@ while IFS= read -r linie || [ -n "$linie" ]; do
     fi
 done
 
-echo $count 
-
+echo $count
